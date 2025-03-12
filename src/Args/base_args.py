@@ -15,6 +15,7 @@ from src.Utils.utils import flatten_dict
 # Get Arguments
 # ===================================================================================
 def get_args(args: Optional[Dict[str, Any]] = None):
+    # 定义需要解析的dataclass
     parser = HfArgumentParser(
         (
         ExperimentArguments,
@@ -48,6 +49,7 @@ def get_args(args: Optional[Dict[str, Any]] = None):
         else:
             remaining_args.append(arg)
 
+    # 有配置文件直接解析配置文件，没有配置文件解析命令行
     if config_file:
         config_path = Path(os.path.abspath(config_file))
         if config_file.endswith(".yaml"):

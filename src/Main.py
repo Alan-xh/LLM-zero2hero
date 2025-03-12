@@ -7,22 +7,32 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 warnings.filterwarnings("ignore")
 
+# 获得超参数
 from src.Args.base_args import get_args, save_args
 from src.Args.sft_args import SFTArguments  
 from src.Args.dpo_args import DPOArguments
+# 数据加载
 from src.Dataset.dataset import (get_train_dataloader, get_valid_dataloader,
                              load_data)
 from src.Dataset.sft_dataset import LLM_Dataset
 from src.Dataset.dpo_dataset import DPO_Dataset
+# 获得环境变量
 from src.Enviroment.env import (Prepare_environment, check_disk_space,
                             wrap_model_distributed)
+# 获得模型
 from src.Model.sft_model import LLM
 from src.Model.dpo_model import DPO_LLM
+# 分词器
 from src.Model.tokenizer import get_tokenizer
+# 学习率控制器
 from src.Train.lr_scheduler import get_scheduler
+# 混淆矩阵
 from src.Train.metric import get_metric
+# 优化器
 from src.Train.optimizer import get_optimizer
+# 训练器
 from src.Train.train import LLM_train
+# 工具
 from src.Train.train_utils import calculate_steps, compile_model
 from src.Utils.utils import get_logger
 

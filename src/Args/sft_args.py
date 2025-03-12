@@ -4,7 +4,7 @@ from dataclasses import dataclass, is_dataclass
 from datetime import datetime
 from typing import Any, Callable, Dict, Tuple
 
-import coolname
+# import coolname
 import numpy as np
 import torch
 
@@ -34,7 +34,8 @@ class ExperimentArguments:
     wandb_name: str = ""
 
     def generate_experiment_name(self) -> str:
-        return coolname.generate_slug(2)
+        # return coolname.generate_slug(2)
+        pass
 
     def __post_init__(self):
         os.makedirs(self.output_dir, exist_ok=True)
