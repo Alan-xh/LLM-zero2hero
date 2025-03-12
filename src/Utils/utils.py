@@ -163,7 +163,7 @@ class TqdmTologger(io.StringIO):
 
 def flatten_dict(nested_dict):
     """
-    Flatten a nested dictionary.
+    Flatten a nested dictionary. 把嵌套字典压平。
 
     Args:
         nested_dict (dict): The nested dictionary to flatten.
