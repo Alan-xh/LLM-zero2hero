@@ -24,11 +24,11 @@ from src.Model.sft_model import LLM
 from src.Model.dpo_model import DPO_LLM
 # 分词器
 from src.Model.tokenizer import get_tokenizer
-# 学习率控制器
+# 学习率调整器
 from src.Train.lr_scheduler import get_scheduler
 # 混淆矩阵
 from src.Train.metric import get_metric
-# 优化器
+# 参数优化器
 from src.Train.optimizer import get_optimizer
 # 训练器
 from src.Train.train import LLM_train
@@ -43,6 +43,7 @@ def main():
     # Load arguments
     exp_args, data_args, model_args, training_args, infer_args, env_args = get_args()
     
+    # SFT和DPO的数据处理超参数和训练超参数不同
     if exp_args.task == "SFT":
         args = SFTArguments(
             exp_args, data_args, model_args, training_args, infer_args, env_args
@@ -89,7 +90,7 @@ def main():
         model = LLM(args)
     elif args.exp_args.task == "DPO":
         model = DPO_LLM(args)
-
+ 
     # Check if there is enough disk space
     check_disk_space(model, args.exp_args.output_dir, args.env_args.use_deepspeed)
 

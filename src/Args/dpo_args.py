@@ -99,9 +99,10 @@ class DPOArguments:
 
         if "Sub-Experiment Name" in log_info:
             items = list(log_info.items())
-            main_exp_index = next(
-                i for i, (k, v) in enumerate(items) if k == "Experiment Name"
-            )
+            # main_exp_index = next(
+            #     i for i, (k, v) in enumerate(items) if k == "Experiment Name"
+            # )
+            main_exp_index = items.keys().index("Experiment Name")
             items.insert(
                 main_exp_index + 1,
                 ("Sub-Experiment Name", log_info["Sub-Experiment Name"]),

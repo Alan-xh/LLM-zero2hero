@@ -39,11 +39,12 @@ def sync_across_processes(
         Tensor or numpy array concatenated across all processes
     """
 
-    torch.distributed.barrier()
+    torch.distributed.barrier() # Wait for all processes to reach this point
 
     if isinstance(t, torch.Tensor):
         gather_t_tensor = [torch.ones_like(t) for _ in range(world_size)]
 
+        # 收集所有进程中的张量
         if t.is_cuda:
             torch.distributed.all_gather(gather_t_tensor, t)
         else:

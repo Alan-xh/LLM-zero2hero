@@ -37,7 +37,7 @@ def Prepare_environment(args: Any) -> None:
         args.model_args.backbone_dtype in ["int8", "int4"]
         and args.env_args.use_deepspeed
     ):
-        raise EnviromentException(
+        raise EnviromentException(  # deepspeed does not support int4 or int8 models"""
             f"""
             ❌ Deepspeed does not support backbone type {args.model_args.backbone_dtype}.
             🔧 Please set backbone type to float16 or bfloat16 for using deepspeed.
@@ -46,18 +46,19 @@ def Prepare_environment(args: Any) -> None:
 
     args.env_args._distributed = int(os.environ.get("WORLD_SIZE", 1)) > 1
 
+    # 分布式环境配置
     if args.env_args._distributed:
-        args.env_args._local_rank = int(os.environ["LOCAL_RANK"])
-        args.env_args._device = f"cuda:{args.env_args._local_rank}"
+        args.env_args._local_rank = int(os.environ["LOCAL_RANK"])  # torch设置的当前节点的进程编号，每个GPU对应一个进程
+        args.env_args._device = f"cuda:{args.env_args._local_rank}" # 设置当前进程使用的当前节点GPU编号
         if args.env_args.use_deepspeed:
             deepspeed.init_distributed()
         else:
             torch.distributed.init_process_group(backend="nccl", init_method="env://")
 
-        args.env_args._cpu_comm = torch.distributed.new_group(backend="gloo")
+        args.env_args._cpu_comm = torch.distributed.new_group(backend="gloo") # 获得cpu通信组节点
 
-        args.env_args._world_size = torch.distributed.get_world_size()
-        args.env_args._rank = torch.distributed.get_rank()
+        args.env_args._world_size = torch.distributed.get_world_size() # 获得集群进程总数
+        args.env_args._rank = torch.distributed.get_rank() # 获得当前进程在整个集群中的编号
         torch.cuda.set_device(args.env_args._rank)
         logger.info(
             f"""
@@ -68,6 +69,7 @@ def Prepare_environment(args: Any) -> None:
             """
         )
 
+        # 根据配置，同步收集所有节点随机种子的第一个作为随机种子
         args.env_args.seed = int(
             sync_across_processes(
                 np.array([args.env_args.seed]),

@@ -37,7 +37,7 @@ def get_args(args: Optional[Dict[str, Any]] = None):
             dpo_training_args,
             infer_args,
             env_args,
-        ) = parser.parse_dict(args)
+        ) = parser.parse_dict(args)  # 返回dtype 元组，dtype表示dataclass类
     else:
         # Extract command line arguments
         remaining_args = []
@@ -61,7 +61,7 @@ def get_args(args: Optional[Dict[str, Any]] = None):
                        
         flat_dict = flatten_dict(nested_dict)
         try:
-            parsed_args = parser.parse_dict(flat_dict)
+            parsed_args = parser.parse_dict(flat_dict)  # 根据配置文件加载所有字段
             return parsed_args
         except Exception as e:
             print(f"Error parsing arguments: {e}")

@@ -28,6 +28,7 @@ class ExperimentArguments:
     output_dir: str = "./outputs"
     log_file_name: str = "log.log"
     use_wandb: bool = False
+    '''启动wandb可视化'''
 
     wandb_entity: str = ""
     wandb_project: str = ""
@@ -95,6 +96,7 @@ class DatasetArguments:
     mask_prompt_labels: bool = True
 
     def __post_init__(self):
+        # 验证集的生成策略，自动则为随机切分作为验证集
         if self.valid_strategy in ("", None, "None"):
             raise DataException(
                 "Validation strategy must be set, options are [custom, auto]"
@@ -261,6 +263,7 @@ class SFTArguments:
         logger = get_logger(self)
         logger.info("\n" + table)
 
+        # wandb不可以和experiment_name重复
         if (
             self.exp_args.use_wandb
             and self.exp_args.wandb_name == self.exp_args.experiment_name
@@ -281,7 +284,7 @@ class SFTArguments:
         Returns:
             str: A string representation of the formatted table.
         """
-        from tabulate import tabulate
+        from tabulate import tabulate  # 一个以表格形式美化打印的库
 
         # Create a dictionary containing the information you want to display in the log
         log_info = {
@@ -308,9 +311,10 @@ class SFTArguments:
 
         if "Sub-Experiment Name" in log_info:
             items = list(log_info.items())
-            main_exp_index = next(
-                i for i, (k, v) in enumerate(items) if k == "Experiment Name"
-            )
+            # main_exp_index = next(
+            #     i for i, (k, v) in enumerate(items) if k == "Experiment Name"
+            # )
+            main_exp_index = items.keys().index("Experiment Name")
             items.insert(
                 main_exp_index + 1,
                 ("Sub-Experiment Name", log_info["Sub-Experiment Name"]),
